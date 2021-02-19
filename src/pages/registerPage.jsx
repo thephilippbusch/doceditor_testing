@@ -24,14 +24,11 @@ const LoginContainer = styled.div`
     background-color: rgb(150, 150, 150);
 `;
 
-const sampleUser = {
-    username: "Phillex",
-    password: "1234"
-}
-
-const LoginPage = () => {
+const RegisterPage = () => {
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
+    const [passwordRepeat, setPasswordRepeat] = useState("");
+
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -45,22 +42,24 @@ const LoginPage = () => {
         setTimeout(() => {
             if(
                 username !== "" &&
-                password !== ""
+                password !== "" &&
+                passwordRepeat !== ""
             ) {
-                setError("");
-                setUsername("");
-                setPassword("");
-                if(
-                    username == sampleUser.username &&
-                    password == sampleUser.password
-                ) {
+                if(password !== passwordRepeat) {
+                    setLoading(false)
+                    setError("Your confirmation does not match your password")
+                } else {
+                    console.log(`Username: ${username}`)
+                    console.log(`Password: ${password}`)
+
+                    setError("");
+                    setUsername("");
+                    setPassword("");
                     setLoading(false);
+
                     auth.signin(() => {
                         history.replace(from);
                     });
-                } else {
-                    setLoading(false);
-                    setError("Password or username incorrect")
                 }
             } else {
                 setLoading(false);
@@ -72,14 +71,14 @@ const LoginPage = () => {
     return(
         <LoginContainer>
             <Box 
-                width="medium-large"
+                width="medium-large" 
                 justify="center"
                 background="background"
                 pad="medium"
                 round="xsmall"
             >
                 <Box width="100%" justify="center" direction="row" margin={{bottom: "small"}}>
-                    <Heading margin="small" >Login</Heading>
+                    <Heading margin="small" >Register</Heading>
                 </Box>
                 <Form
                     onSubmit={() =>
@@ -102,6 +101,14 @@ const LoginPage = () => {
                             type="password"
                         />
                     </FormField>
+                    <FormField label="Confirm Password" name="password-repeat" required>
+                        <TextInput
+                            name="password-repeat"
+                            value={passwordRepeat}
+                            onChange={e => setPasswordRepeat(e.target.value)}
+                            type="password"
+                        />
+                    </FormField>
                     <Box 
                         pad={{horizontal: "xlarge"}} 
                         direction="row" 
@@ -112,7 +119,7 @@ const LoginPage = () => {
                             focusIndicator={false}
                             size="large"
                             type="submit"
-                            label="Login"
+                            label="Register"
                             fill="horizontal"
                             primary
                         />
@@ -130,4 +137,4 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage;
+export default RegisterPage;

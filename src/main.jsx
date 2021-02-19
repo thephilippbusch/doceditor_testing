@@ -7,7 +7,9 @@ import {
 } from 'react-router-dom';
 
 import ProvideAuth, { PrivateRoute } from './auth/provideAuth';
-import LoadLogin from './loader/loadLogin';
+import LoginPage from './pages/loginPage';
+import RegisterPage from './pages/registerPage';
+
 import LoadHome from './loader/loadHome';
 import LoadProfile from './loader/loadProfile';
 import NavBar from './components/navbar';
@@ -27,17 +29,17 @@ const Main = () => {
           <Route path='/:page' render={({match}) => <NavBar match={match}/>}/>
 
           <Switch>
-            <PrivateRoute exact path="/home">
+            <Route exact path="/home">
               <LoadHome />
-            </PrivateRoute>
+            </Route>
             <PrivateRoute path="/profile">
               <LoadProfile />
             </PrivateRoute>
             <Route path="/login">
-              <LoadLogin />
+              <LoginPage />
             </Route>
             <Route path="/register">
-              <h1>Register</h1>
+              <RegisterPage />
             </Route>
           </Switch>
 

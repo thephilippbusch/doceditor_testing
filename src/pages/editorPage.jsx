@@ -9,11 +9,18 @@ import AceEditor from 'react-ace';
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-monokai";
 
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Button from '@material-ui/core/Button';
+import {
+    Box,
+    Text,
+    Header,
+    Button,
+    DropButton
+} from 'grommet';
+
+import {
+    Next as NextIcon,
+    Previous as PreviousIcon
+} from 'grommet-icons'
 
 const EditorContainer = styled.div`
     width: 100%;
@@ -87,8 +94,8 @@ const PdfViewer = styled.div`
 `;
 
 const TexEditor = styled.div`
-    width: 50%;
-    height: 83vh;
+    width: 100%;
+    height: 80vh;
 
     .texHeader {
         height: 4vh;
@@ -129,12 +136,124 @@ const RichEditor = styled.div`
 const EditorPage = () => {
     const [currentEditor, setCurrentEditor] = useState('rich');
     const [editorState, setEditorState] = useState('');
+
+    const [editorWidth, setEditorWidth] = useState("49.5%");
+    const [viewerWidth, setViewerWidth] = useState("49.5%");
+    const [showEditorBtn, setShowEditorBtn] = useState(true);
+    const [showViewerBtn, setShowViewerBtn] = useState(true);
+    const [fullview, setFullview] = useState(true);
+    const [currentView, setCurrentView] = useState("editor");
     var editor = null;
 
+    const handleViewerHide = () => {
+        setFullview(false)
+        setViewerWidth("0%")
+        setEditorWidth("99%")
+        setCurrentView("editor")
+    }
 
+    const handleEditorHide = () => {
+        setFullview(false)
+        setEditorWidth("0%")
+        setViewerWidth("99%")
+        setCurrentView("viewer")
+    }
+
+    const resetWidth = () => {
+        setEditorWidth("49.5%")
+        setViewerWidth("49.5%")
+        setFullview(true);
+    }
 
     return(
         <EditorContainer>
+            <Box with="100%" justify="around" direction="row">
+                <Box width={editorWidth} background="text-weak" height="91vh">
+                    <Header>
+                        <Box>
+                            <DropButton
+                                primary
+                                borderradius="0px"
+                                label="Action"
+                                dropAlign={{ top: 'bottom', right: 'right' }}
+                                dropContent={
+                                    <Box background="light-2">
+                                        <Button label="New"/>
+                                        <Button label="Save"/>
+                                        <Button primary label="Export"/>
+                                    </Box>
+                                }
+                            />
+                        </Box>
+                    </Header>
+                    <TexEditor>
+                        <div className="texHeader">
+                            <p>Tex-Code:</p>
+                        </div>
+                        <div className="texBody">
+                        <AceEditor
+                            placeholder="Start typing..."
+                            mode="html"
+                            theme="monokai"
+                            name="TexEditor"
+                            width='100%'
+                            height='100%'
+                            fontSize={14}
+                            showPrintMargin={true}
+                            showGutter={true}
+                            highlightActiveLine={true}
+                            onChange={(val) => {
+                                setEditorState(val)
+                            }}
+                            value={editorState}
+                            setOptions={{
+                                enableBasicAutocompletion: false,
+                                enableLiveAutocompletion: false,
+                                enableSnippets: false,
+                                showLineNumbers: true,
+                                tabSize: 2,
+                            }}
+                        />
+                        </div>
+                    </TexEditor>
+                </Box>
+                <Box width="1%" background="brand" height="91vh" direction="column" justify="center">
+                    {fullview ? (
+                        <Box height="xsmall" justify="around">
+                            <Button onClick={handleViewerHide}>
+                                <NextIcon size="small"/>
+                            </Button>
+                            <Button onClick={handleEditorHide}>
+                                <PreviousIcon size="small"/>
+                            </Button>
+                        </Box>
+                    ) : (
+                        (currentView === "viewer") ? (
+                            <Button onClick={resetWidth}>
+                                <NextIcon size="small"/>
+                            </Button>
+                        ) : (
+                            <Button onClick={resetWidth}>
+                                <PreviousIcon size="small"/>
+                            </Button>
+                        )
+                    )}
+                </Box>
+                <Box width={viewerWidth} background="text" height="91vh">
+                    <Header>
+                        PDF Viewer
+                    </Header>
+                    <div className="pdfHeader">
+                        <p>PDF-Viewer:</p>
+                    </div>
+                    <div className="pdfContent">
+                        {parse(editorState)}
+                    </div>
+                </Box>
+            </Box>
+
+
+            {/*
             <div className="header">
                 <div className="left">
                     <div className="buttonGroup">
@@ -247,6 +366,7 @@ const EditorPage = () => {
                     </div>
                 </PdfViewer>
             </div>
+            */}
         </EditorContainer>
     )
 }

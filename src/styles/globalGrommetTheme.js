@@ -85,6 +85,12 @@ export const globalTheme = {
         "radius": "8px"
       }
     },
+    "focus": {
+      "outline": {
+        "size": "0px",
+        "color": "text-strong",
+      }
+    },
     "drop": {
       "border": {
         "radius": "8px"
@@ -152,7 +158,9 @@ export const globalTheme = {
       "xxsmall": "48px",
       "xsmall": "96px",
       "small": "192px",
+      "medium-small": "288px",
       "medium": "384px",
+      "medium-large": "576px",
       "large": "768px",
       "xlarge": "1152px",
       "xxlarge": "1536px",
@@ -173,7 +181,7 @@ export const globalTheme = {
   "button": {
     "border": {
       "width": "2px",
-      "radius": "18px"
+      "radius": "4px"
     },
     "padding": {
       "vertical": "4px",

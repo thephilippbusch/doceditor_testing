@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import Gliederung from '../components/gliederung';
 
 import { 
   Box,
@@ -12,13 +13,13 @@ import {
 } from 'grommet';
 
 import {
-  User as UserIcon
+  User as UserIcon,
+  Image as ImageIcon
 } from 'grommet-icons';
 
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../auth/provideAuth';
 import LoadEditor from '../loader/loadEditor';
-import LoadProfile from '../loader/loadProfile';
 
 const HomePageContainer = styled.div`
   width: 100%;
@@ -51,6 +52,10 @@ const sampleData = [
   }
 ];
 
+const mockGliederung = {
+  heading1: "heida"
+}
+
 const HomePage = () => {
   const [open, setOpen] = useState(false);
   let history = useHistory();
@@ -71,6 +76,7 @@ const HomePage = () => {
         <Box height="50%" border={{ color: 'brand', size: 'xsmall', side: 'bottom' }}>
           <Accordion width="100%">
             <AccordionPanel
+              reverse
               label={
                 <Text size="large" margin={{vertical: "xsmall", horizontal: "small"}}>
                   Panel 1
@@ -86,7 +92,7 @@ const HomePage = () => {
                   <AccordionPanel
                     width="100%"
                     label={
-                      <Text size="medium" margin={{vertical: "xsmall", left: "small"}}>
+                      <Text size="medium" margin={{vertical: "xsmall"}}>
                         Images
                       </Text>
                     }
@@ -97,8 +103,8 @@ const HomePage = () => {
                       margin={{left: "medium"}}
                       focus="none"
                     >
-                      <Text>logo.png</Text>
-                      <Text>rauch.png</Text>
+                      <Text><ImageIcon size="small"/> logo.png</Text>
+                      <Text><ImageIcon size="small"/> rauch.png</Text>
                     </Box>
                   </AccordionPanel>
                 </Accordion>
@@ -124,7 +130,7 @@ const HomePage = () => {
           </Accordion>
         </Box>
         <Box height="50%" border={{ color: 'brand', size: 'xsmall', side: 'top' }}>
-          <Heading level={4}>World</Heading>
+          <Gliederung />
         </Box>
       </Box>
       <Main 

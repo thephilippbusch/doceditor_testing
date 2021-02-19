@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../auth/provideAuth';
 
@@ -9,6 +9,11 @@ import {
     Avatar,
     Heading
 } from 'grommet';
+
+import {
+    User as UserIcon,
+    Logout as LogoutIcon
+} from 'grommet-icons';
 
 
 const AppBar = (props) => (
@@ -36,10 +41,28 @@ const NavBarItem = (props) => {
                     <Menu 
                         dropAlign={{right: 'right', top: 'bottom'}}
                         items={[
-                            {label: 'Profil', onClick: () => history.push('/profile')},
-                            {label: 'Logout', onClick: () => {
-                                props.auth.signout(() => history.push("/login"))
-                            }}
+                            {
+                                label: (
+                                    <Box alignSelf="center" pad={{right: "medium"}}>Profil</Box>
+                                ), 
+                                icon: (
+                                    <Box pad="small">
+                                        <UserIcon size="medium"/>
+                                    </Box>
+                                ),
+                                onClick: () => history.push('/profile')
+                            },
+                            {
+                                label: <Box alignSelf="center" pad={{right: "medium"}}>Logout</Box>,
+                                icon: (
+                                    <Box pad="small">
+                                        <LogoutIcon size="medium"/>
+                                    </Box>
+                                ),
+                                onClick: () => {
+                                    props.auth.signout(() => history.push("/login"))
+                                }
+                            }
                         ]}
                     >
                         <Avatar src="//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80" />
@@ -65,10 +88,28 @@ const NavBarItem = (props) => {
                     <Menu 
                         dropAlign={{right: 'right', top: 'bottom'}}
                         items={[
-                            {label: 'Profil', onClick: () => history.push('/profile')},
-                            {label: 'Logout', onClick: () => {
-                                props.auth.signout(() => history.push("/login"))
-                            }}
+                            {
+                                label: (
+                                    <Box alignSelf="center" pad={{right: "medium"}}>Profil</Box>
+                                ), 
+                                icon: (
+                                    <Box pad="small">
+                                        <UserIcon size="medium"/>
+                                    </Box>
+                                ),
+                                onClick: () => history.push('/profile')
+                            },
+                            {
+                                label: <Box alignSelf="center" pad={{right: "medium"}}>Logout</Box>,
+                                icon: (
+                                    <Box pad="small">
+                                        <LogoutIcon size="medium"/>
+                                    </Box>
+                                ),
+                                onClick: () => {
+                                    props.auth.signout(() => history.push("/login"))
+                                }
+                            }
                         ]}
                     >
                         <Avatar src="//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80" />

@@ -5,7 +5,7 @@ import {
     Anchor,
     Image
 } from 'grommet';
-import { Github } from 'grommet-icons';
+import { Github, PiedPiper } from 'grommet-icons';
 
 const Footer = () => {
     return(
@@ -22,12 +22,7 @@ const Footer = () => {
         >
             <Box direction="row" width="10%" height="3vh">
                 <Text size="small" alignSelf="center">v1.0.1</Text>
-                <Image 
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/LaTeX_logo.svg/1280px-LaTeX_logo.svg.png"
-                    alt="Latex Logo"
-                    fit="contain"
-                    height="30px"
-                />
+                <PiedPiper margin={{left: "medium"}} />
             </Box>
             <Anchor 
                 color="text-weak" 

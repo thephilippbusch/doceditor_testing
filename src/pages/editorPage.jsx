@@ -5,8 +5,9 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import '../styles/rich_editor.css';
 import parse from 'html-react-parser';
 import AceEditor from 'react-ace';
+import fileDownload from 'react-file-download';
 
-import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-latex";
 import "ace-builds/src-noconflict/theme-monokai";
 
 import {
@@ -14,12 +15,15 @@ import {
     Text,
     Header,
     Button,
-    DropButton
+    DropButton,
+    Layer,
+    TextInput
 } from 'grommet';
 
 import {
     Next as NextIcon,
-    Previous as PreviousIcon
+    Previous as PreviousIcon,
+    Test
 } from 'grommet-icons'
 
 const EditorContainer = styled.div`
@@ -95,23 +99,7 @@ const PdfViewer = styled.div`
 
 const TexEditor = styled.div`
     width: 100%;
-    height: 80vh;
-
-    .texHeader {
-        height: 4vh;
-        background-color: hsl(270, 1%, 29%);
-        border: 1px hsl(300, 1%, 22%) solid;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-
-        p {
-            margin-left: 20px;
-            font-weight: bold;
-            font-size: 16px;
-            color: white;
-        }
-    }
+    height: 100%;
 
     .texBody {
         height: 100%;
@@ -143,6 +131,10 @@ const EditorPage = () => {
     const [showViewerBtn, setShowViewerBtn] = useState(true);
     const [fullview, setFullview] = useState(true);
     const [currentView, setCurrentView] = useState("editor");
+
+    const [showLayer, setShowLayer] = useState(false);
+    const [texFilename, setTexFilename] = useState('');
+    const [fileNameError, setFileNameError] = useState('');
     var editor = null;
 
     const handleViewerHide = () => {
@@ -165,10 +157,71 @@ const EditorPage = () => {
         setFullview(true);
     }
 
+    const test = () => {
+        console.log(editorState)
+    }
+
+    const latexCompiler = () => {
+        console.log(editorState);
+        // const pdf = latex(editorState, {cmd: "pdflatex"});
+
+        fileDownload(editorState, 'test.tex');
+    }
+
+    const saveTexFile = () => {
+        if(texFilename === "") {
+            setFileNameError('Please enter a File Name!');
+        } else {
+            let fullFilename = `${texFilename}.tex`;
+            fileDownload(editorState, fullFilename);
+            setShowLayer(false);
+        }
+    }
+
     return(
         <EditorContainer>
             <Box with="100%" justify="around" direction="row">
                 <Box width={editorWidth} background="text-weak" height="91vh">
+                    {showLayer && (
+                        <Layer
+                            onEsc={() => setShowLayer(false)}
+                        >
+                            <Box pad="medium" background="background-front" round="5px">
+                                <Box 
+                                    direction="row" 
+                                    justify="start" 
+                                    width="100%" 
+                                    align="center"
+                                    margin={{vertical: "medium"}}
+                                >
+                                    <TextInput
+                                        plain
+                                        width="small"
+                                        placeholder="somefile"
+                                        label="Filename"
+                                        value={texFilename}
+                                        onChange={e => setTexFilename(e.target.value)}
+                                    />
+                                    <Text>.tex</Text>
+                                </Box>
+                                <Box direction="row" justify="around">
+                                    <Button 
+                                        primary
+                                        label="Confirm"
+                                        onClick={saveTexFile}
+                                    />
+                                    <Button
+                                        secondary
+                                        label="Cancel"
+                                        onClick={() => setShowLayer(false)}
+                                    />
+                                </Box>
+                                <Box margin={{vertical: "small"}} direction="row" justify="center">
+                                    <Text size="small" color="status-critical">{fileNameError}</Text>
+                                </Box>
+                            </Box>
+                        </Layer>
+                    )}
                     <Header>
                         <Box>
                             <DropButton
@@ -178,46 +231,45 @@ const EditorPage = () => {
                                 dropAlign={{ top: 'bottom', right: 'right' }}
                                 dropContent={
                                     <Box background="light-2">
-                                        <Button label="New"/>
+                                        <Button label="New" onClick={() => test()}/>
                                         <Button label="Save"/>
-                                        <Button primary label="Export"/>
+                                        <Button primary label="Export" onClick={() => setShowLayer(true)}/>
                                     </Box>
                                 }
                             />
                         </Box>
                     </Header>
                     <TexEditor>
-                        <div className="texHeader">
-                            <p>Tex-Code:</p>
-                        </div>
                         <div className="texBody">
-                        <AceEditor
-                            placeholder="Start typing..."
-                            mode="html"
-                            theme="monokai"
-                            name="TexEditor"
-                            width='100%'
-                            height='100%'
-                            fontSize={14}
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            onChange={(val) => {
-                                setEditorState(val)
-                            }}
-                            value={editorState}
-                            setOptions={{
-                                enableBasicAutocompletion: false,
-                                enableLiveAutocompletion: false,
-                                enableSnippets: false,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                        />
+                            <AceEditor
+                                placeholder="Start typing..."
+                                mode="latex"
+                                theme="monokai"
+                                name="TexEditor"
+                                width='100%'
+                                height='100%'
+                                fontSize={14}
+                                showPrintMargin={true}
+                                showGutter={true}
+                                highlightActiveLine={true}
+                                onChange={(val) => {
+                                    setEditorState(val)
+                                }}
+                                value={editorState}
+                                setOptions={{
+                                    wrap: true,
+                                    indentedSoftWrap: false,
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    showLineNumbers: true,
+                                    tabSize: 4,
+                                }}
+                            />
                         </div>
                     </TexEditor>
                 </Box>
-                <Box width="1%" background="brand" height="91vh" direction="column" justify="center">
+                <Box width="1%" background="text-xweak" height="91vh" direction="column" justify="center">
                     {fullview ? (
                         <Box height="xsmall" justify="around">
                             <Button onClick={handleViewerHide}>
@@ -241,14 +293,11 @@ const EditorPage = () => {
                 </Box>
                 <Box width={viewerWidth} background="text" height="91vh">
                     <Header>
-                        PDF Viewer
+                        <Button primary label="Compile" onClick={() => latexCompiler()}/>
                     </Header>
-                    <div className="pdfHeader">
-                        <p>PDF-Viewer:</p>
-                    </div>
-                    <div className="pdfContent">
-                        {parse(editorState)}
-                    </div>
+                    <Box>
+                        <h1>This is where the PDF gets loaded!</h1>
+                    </Box>
                 </Box>
             </Box>
 

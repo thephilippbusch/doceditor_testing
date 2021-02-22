@@ -3,15 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Main from './main';
 import reportWebVitals from './reportWebVitals';
-import { Grommet } from 'grommet';
-import { globalTheme } from './styles/globalGrommetTheme';
 
-ReactDOM.render(
-  <Grommet theme={globalTheme}>
-    <Main />
-  </Grommet>,
-  document.getElementById('root')
-);
+ReactDOM.render(<Main />, document.getElementById('root'));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

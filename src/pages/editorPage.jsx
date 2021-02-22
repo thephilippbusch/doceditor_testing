@@ -6,6 +6,7 @@ import '../styles/rich_editor.css';
 import parse from 'html-react-parser';
 import AceEditor from 'react-ace';
 import fileDownload from 'react-file-download';
+import LoadPDFViewer from '../loader/loadPDFViewer';
 
 import "ace-builds/src-noconflict/mode-latex";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -231,7 +232,7 @@ const EditorPage = () => {
                                 dropAlign={{ top: 'bottom', right: 'right' }}
                                 dropContent={
                                     <Box background="light-2">
-                                        <Button label="New" onClick={() => test()}/>
+                                        <Button label="New"/>
                                         <Button label="Save"/>
                                         <Button primary label="Export" onClick={() => setShowLayer(true)}/>
                                     </Box>
@@ -295,8 +296,8 @@ const EditorPage = () => {
                     <Header>
                         <Button primary label="Compile" onClick={() => latexCompiler()}/>
                     </Header>
-                    <Box>
-                        <h1>This is where the PDF gets loaded!</h1>
+                    <Box overflow={{vertical: "scroll"}} direction="row" justify="center" pad="xsmall">
+                        <LoadPDFViewer />
                     </Box>
                 </Box>
             </Box>

@@ -11,7 +11,7 @@ import {
     Text
 } from 'grommet'
 
-import { useAuth } from '../auth/provideAuth';
+import { useAuth } from '../auth/auth';
 import { useHistory, useLocation } from 'react-router-dom';
 import LoadingScreen from '../components/loadingScreen';
 
@@ -37,36 +37,34 @@ const LoginPage = () => {
 
     let history = useHistory();
     let location = useLocation();
-    let auth = useAuth();
+    let { setAuthTokens } = useAuth();
     let { from } = location.state || { from: { pathname: "/home" } };
 
     const handleSubmit = () => {
         setLoading(true);
-        setTimeout(() => {
+        
+        if(
+            username !== "" &&
+            password !== ""
+        ) {
+            setError("");
+            setUsername("");
+            setPassword("");
             if(
-                username !== "" &&
-                password !== ""
+                username == sampleUser.username &&
+                password == sampleUser.password
             ) {
-                setError("");
-                setUsername("");
-                setPassword("");
-                if(
-                    username == sampleUser.username &&
-                    password == sampleUser.password
-                ) {
-                    setLoading(false);
-                    auth.signin(() => {
-                        history.replace(from);
-                    });
-                } else {
-                    setLoading(false);
-                    setError("Password or username incorrect")
-                }
+                setLoading(false);
+                setAuthTokens("Llsdijf38we84r8fw4theoso890wefol");
+                history.replace(from);
             } else {
                 setLoading(false);
-                setError("Please enter a valid Username and Password");
+                setError("Password or username incorrect")
             }
-        }, 1500);
+        } else {
+            setLoading(false);
+            setError("Please enter a valid Username and Password");
+        }
     }
 
     return(

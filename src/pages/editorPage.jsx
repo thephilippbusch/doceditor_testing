@@ -245,14 +245,6 @@ const EditorPage = () => {
                         <Box direction="row" justify="start">
                             <Button 
                                 primary 
-                                label="New" 
-                                icon={<NewIcon size="20px"/>} 
-                                reverse
-                                hoverIndicator={true}
-                                onClick={() => console.log('New File')}
-                            />
-                            <Button 
-                                primary 
                                 label="Save" 
                                 icon={<CheckSaveIcon size="20px"/>} 
                                 reverse

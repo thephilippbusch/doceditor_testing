@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 import {
     Button,
@@ -11,9 +12,10 @@ import {
     Text
 } from 'grommet'
 
-import { useAuth } from '../auth/provideAuth';
+import { useAuth } from '../auth/auth';
 import { useHistory, useLocation } from 'react-router-dom';
 import LoadingScreen from '../components/loadingScreen';
+
 
 const LoginContainer = styled.div`
     width: 100%;
@@ -34,38 +36,52 @@ const RegisterPage = () => {
 
     let history = useHistory();
     let location = useLocation();
-    let auth = useAuth();
+    let { setAuthTokens } = useAuth();
     let { from } = location.state || { from: { pathname: "/home" } };
 
     const handleSubmit = () => {
         setLoading(true);
-        setTimeout(() => {
-            if(
-                username !== "" &&
-                password !== "" &&
-                passwordRepeat !== ""
-            ) {
-                if(password !== passwordRepeat) {
-                    setLoading(false)
-                    setError("Your confirmation does not match your password")
-                } else {
-                    console.log(`Username: ${username}`)
-                    console.log(`Password: ${password}`)
-
-                    setError("");
-                    setUsername("");
-                    setPassword("");
-                    setLoading(false);
-
-                    auth.signin(() => {
-                        history.replace(from);
-                    });
-                }
+        if(
+            username !== "" &&
+            password !== "" &&
+            passwordRepeat !== ""
+        ) {
+            if(password !== passwordRepeat) {
+                setLoading(false)
+                setError("Your confirmation does not match your password")
             } else {
-                setLoading(false);
-                setError("Please enter a valid Username and Password");
+                const signup = async () => {
+                    try {
+                        let payload = {
+                            uid: username,
+                            password: password
+                        }
+
+                        const response = await axios.post(
+                            'localhost:5000/auth/signup',
+                            payload
+                        );
+                        if(response.status="Success") {
+                            setAuthTokens(username);
+                            setLoading(false);
+                            setError("");
+                            setUsername("");
+                            setPassword("");
+
+                            history.replace(from);
+                        }
+                    } catch(e) {
+                        setLoading(false);
+                        setError("Please enter a valid Username and Password");
+                        console.log(e);
+                    }
+                }
+                signup();
             }
-        }, 1500);
+        } else {
+            setLoading(false);
+            setError("Please enter a valid Username and Password");
+        }
     }
 
     return(

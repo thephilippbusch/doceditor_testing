@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 import {
     Button,
@@ -47,20 +48,33 @@ const LoginPage = () => {
             username !== "" &&
             password !== ""
         ) {
-            setError("");
-            setUsername("");
-            setPassword("");
-            if(
-                username == sampleUser.username &&
-                password == sampleUser.password
-            ) {
-                setLoading(false);
-                setAuthTokens("Llsdijf38we84r8fw4theoso890wefol");
-                history.replace(from);
-            } else {
-                setLoading(false);
-                setError("Password or username incorrect")
+            const login = async () => {
+                try {
+                    let payload = {
+                        uid: username,
+                        password: password
+                    }
+
+                    const response = axios.post(
+                        "localhost:5000/auth/login",
+                        payload
+                    )
+
+                    if (response.status === 200) {
+                        setLoading(false);
+                        setError("");
+                        setUsername("");
+                        setPassword("");
+                        setAuthTokens(username);
+                        history.replace(from);
+                    }
+                } catch(e) {
+                    setLoading(false);
+                    setError("Password or username incorrect")
+                    console.log(e);
+                }
             }
+            login()
         } else {
             setLoading(false);
             setError("Please enter a valid Username and Password");

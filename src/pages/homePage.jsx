@@ -20,11 +20,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../auth/provideAuth';
 import LoadEditor from '../loader/loadEditor';
-
-const HomePageContainer = styled.div`
-  width: 100%;
-  height: 100%;
-`;
+import ProjectSelector from '../components/projectSelector';
 
 const sampleData = [
   {
@@ -74,60 +70,7 @@ const HomePage = () => {
         border={{ color: 'brand', size: 'small', side: 'right' }}
       >
         <Box height="50%" border={{ color: 'brand', size: 'xsmall', side: 'bottom' }}>
-          <Accordion width="100%">
-            <AccordionPanel
-              reverse
-              label={
-                <Text size="large" margin={{vertical: "xsmall", horizontal: "small"}}>
-                  Panel 1
-                </Text>
-              }
-            >
-              <Box 
-                pad="xsmall" 
-                background="light-2" 
-                margin={{left: "medium"}}
-              >
-                <Accordion>
-                  <AccordionPanel
-                    width="100%"
-                    label={
-                      <Text size="medium" margin={{vertical: "xsmall"}}>
-                        Images
-                      </Text>
-                    }
-                  >
-                    <Box
-                      pad="xsmall" 
-                      background="light-2" 
-                      margin={{left: "medium"}}
-                      focus="none"
-                    >
-                      <Text><ImageIcon size="small"/> logo.png</Text>
-                      <Text><ImageIcon size="small"/> rauch.png</Text>
-                    </Box>
-                  </AccordionPanel>
-                </Accordion>
-                <Text>main.tex</Text>
-              </Box>
-            </AccordionPanel>
-            <AccordionPanel 
-              label={
-                <Text size="large" margin={{vertical: "xsmall", horizontal: "small"}}>
-                  Panel 2
-                </Text>
-              }
-            >
-              <Box 
-                pad="xsmall" 
-                background="light-2" 
-                margin={{left: "medium"}}
-                focus="none"
-              >
-                <Text>Two</Text>
-              </Box>
-            </AccordionPanel>
-          </Accordion>
+          <ProjectSelector projects={sampleData}/>
         </Box>
         <Box height="50%" border={{ color: 'brand', size: 'xsmall', side: 'top' }}>
           <Gliederung />

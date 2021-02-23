@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
 import '../styles/rich_editor.css';
-import parse from 'html-react-parser';
 import AceEditor from 'react-ace';
 import fileDownload from 'react-file-download';
 import LoadPDFViewer from '../loader/loadPDFViewer';
+import PDFViewer from './pdfViewer';
 
 import "ace-builds/src-noconflict/mode-latex";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -18,14 +16,20 @@ import {
     Button,
     DropButton,
     Layer,
-    TextInput
+    TextInput,
+    Anchor
 } from 'grommet';
 
 import {
     Next as NextIcon,
     Previous as PreviousIcon,
-    Test
-} from 'grommet-icons'
+    Download as DownloadIcon,
+    Checkmark as CheckSaveIcon,
+    AddCircle as NewIcon
+} from 'grommet-icons';
+
+import sampleTex from '../samples/example-tex.txt';
+import LoadingScreen from '../components/loadingScreen';
 
 const EditorContainer = styled.div`
     width: 100%;
@@ -133,10 +137,20 @@ const EditorPage = () => {
     const [fullview, setFullview] = useState(true);
     const [currentView, setCurrentView] = useState("editor");
 
+    const [compilerIsLoading, setCompilerIsLoading] = useState(false);
+    const [PDFViewerComponent, setPDFViewerComponent] = useState();
+
     const [showLayer, setShowLayer] = useState(false);
     const [texFilename, setTexFilename] = useState('');
     const [fileNameError, setFileNameError] = useState('');
-    var editor = null;
+
+    useEffect(() => {
+        fetch(sampleTex)
+            .then(r => r.text())
+            .then(text => {
+                setEditorState(text)
+            })
+    }, [sampleTex]);
 
     const handleViewerHide = () => {
         setFullview(false)
@@ -162,11 +176,15 @@ const EditorPage = () => {
         console.log(editorState)
     }
 
-    const latexCompiler = () => {
-        console.log(editorState);
+    const compileLatex = () => {
         // const pdf = latex(editorState, {cmd: "pdflatex"});
+        setCompilerIsLoading(true)
 
-        fileDownload(editorState, 'test.tex');
+        // setPDFViewerComponent(<LoadPDFViewer tex={editorState} setLoading={loading => setCompilerIsLoading(loading)}/>)
+        setTimeout(() => {
+            setPDFViewerComponent(<PDFViewer />)
+            setCompilerIsLoading(false) 
+        }, 1500)
     }
 
     const saveTexFile = () => {
@@ -224,19 +242,30 @@ const EditorPage = () => {
                         </Layer>
                     )}
                     <Header>
-                        <Box>
-                            <DropButton
-                                primary
-                                borderradius="0px"
-                                label="Action"
-                                dropAlign={{ top: 'bottom', right: 'right' }}
-                                dropContent={
-                                    <Box background="light-2">
-                                        <Button label="New"/>
-                                        <Button label="Save"/>
-                                        <Button primary label="Export" onClick={() => setShowLayer(true)}/>
-                                    </Box>
-                                }
+                        <Box direction="row" justify="start">
+                            <Button 
+                                primary 
+                                label="New" 
+                                icon={<NewIcon size="20px"/>} 
+                                reverse
+                                hoverIndicator={true}
+                                onClick={() => console.log('New File')}
+                            />
+                            <Button 
+                                primary 
+                                label="Save" 
+                                icon={<CheckSaveIcon size="20px"/>} 
+                                reverse
+                                hoverIndicator={true}
+                                onClick={() => console.log("File Saved!")}
+                            />
+                            <Button 
+                                primary 
+                                label="Export" 
+                                icon={<DownloadIcon size="20px"/>}
+                                reverse
+                                hoverIndicator={true}
+                                onClick={() => setShowLayer(true)}
                             />
                         </Box>
                     </Header>
@@ -293,11 +322,21 @@ const EditorPage = () => {
                     )}
                 </Box>
                 <Box width={viewerWidth} background="text" height="91vh">
-                    <Header>
-                        <Button primary label="Compile" onClick={() => latexCompiler()}/>
+                    <Header justify="start">
+                        <Button primary label="Compile" disabled={compilerIsLoading} onClick={() => compileLatex()} />
+                        {compilerIsLoading && (
+                            <LoadingScreen size="alone" />
+                        )}
                     </Header>
                     <Box overflow={{vertical: "scroll"}} direction="row" justify="center" pad="xsmall">
-                        <LoadPDFViewer />
+                        {PDFViewerComponent ? (
+                            PDFViewerComponent
+                        ) : (
+                            <Box margin={{top: "50%"}} direction="column" justify="center">
+                                <Text alignSelf="center">No PDF loaded</Text>
+                                <Anchor alignSelf="center" onClick={() => compileLatex()}>Compile</Anchor>
+                            </Box>
+                        )}
                     </Box>
                 </Box>
             </Box>

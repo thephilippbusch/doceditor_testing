@@ -20,11 +20,19 @@ const DynamicLoader = styled.div`
 `;
 
 const LoadingScreen = (props) => {
-    return (props.size==="component") ? (
-        <DynamicLoader>
-            <CircularProgress color="primary"/>
-        </DynamicLoader>
-    ) : (
+    if(props.size === "component") {
+        return (
+            <DynamicLoader>
+                <CircularProgress color="primary"/>
+            </DynamicLoader>
+        )
+    }
+    if(props.size === "alone") {
+        return (
+            <CircularProgress size={30} color="primary"/>
+        )
+    }
+    return (
         <FullScreenLoader>
             <CircularProgress color="primary"/>
         </FullScreenLoader>

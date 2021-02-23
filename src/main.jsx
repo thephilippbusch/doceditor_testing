@@ -2,6 +2,7 @@ import React, { useState, lazy } from 'react';
 import styled from 'styled-components';
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
   Switch
 } from 'react-router-dom';
@@ -47,7 +48,9 @@ const Main = () => {
                 <Route path="/register" component={RegisterPage} />
                 <PrivateRoute path="/profile" component={LoadProfile} />
                 <PrivateRoute exact path="/home" component={LoadHome} />
-                <PrivateRoute component={LoadHome} />
+                <PrivateRoute path="/">
+                  <Redirect to="/home"/>
+                </PrivateRoute>
               </Switch>
             </React.Suspense>
 

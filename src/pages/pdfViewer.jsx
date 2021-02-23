@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Box } from 'grommet';
+import tempPDF from '../components/test.pdf';
+import multiPagePDF from '../components/cecmg-cms-doku_example.pdf';
 
-import samplePDF from '../components/cecmg-example.pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -15,15 +17,15 @@ const PDFViewer = (props) => {
 
     return (
         <Document
-            file={samplePDF}
+            file={multiPagePDF}
             onLoadSuccess={onDocumentLoadSuccess}
+            onLoadError={console.error}
         >
             {Array.from(
                 new Array(numPages),
                 (el, index) => (
-                    <Box pad="xsmall">
+                    <Box pad="xsmall" key={`page_${index + 1}`}>
                         <Page
-                            key={`page_${index + 1}`}
                             pageNumber={index + 1}
                         />
                     </Box>

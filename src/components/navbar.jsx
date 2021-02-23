@@ -34,6 +34,13 @@ const NavBarItem = (props) => {
     let history = useHistory();
     console.log(props.path);
 
+    const logout = () => {
+        localStorage.removeItem('tokens');
+        // localStorage.removeItem('uid');
+
+        history.push('/login');
+    }
+
     switch(props.path) {
         case "home":
             return(
@@ -59,9 +66,7 @@ const NavBarItem = (props) => {
                                         <LogoutIcon size="medium"/>
                                     </Box>
                                 ),
-                                onClick: () => {
-                                    props.auth.signout(() => history.push("/login"))
-                                }
+                                onClick: () => logout()
                             }
                         ]}
                     >
@@ -85,6 +90,38 @@ const NavBarItem = (props) => {
             return(
                 <Box direction="row">
                     <Button margin={{vertical:"0px", horizontal:"xlarge"}} onClick={() => history.push("/home")}>Home</Button>
+                    <Menu 
+                        dropAlign={{right: 'right', top: 'bottom'}}
+                        items={[
+                            {
+                                label: (
+                                    <Box alignSelf="center" pad={{right: "medium"}}>Profil</Box>
+                                ), 
+                                icon: (
+                                    <Box pad="small">
+                                        <UserIcon size="medium"/>
+                                    </Box>
+                                ),
+                                onClick: () => history.push('/profile')
+                            },
+                            {
+                                label: <Box alignSelf="center" pad={{right: "medium"}}>Logout</Box>,
+                                icon: (
+                                    <Box pad="small">
+                                        <LogoutIcon size="medium"/>
+                                    </Box>
+                                ),
+                                onClick: () => logout()
+                            }
+                        ]}
+                    >
+                        <Avatar src="//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80" />
+                    </Menu>
+                </Box>
+            )
+        default:
+            return(
+                <Box direction="row">
                     <Menu 
                         dropAlign={{right: 'right', top: 'bottom'}}
                         items={[

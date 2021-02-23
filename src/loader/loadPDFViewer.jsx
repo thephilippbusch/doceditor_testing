@@ -3,15 +3,23 @@ import axios from 'axios';
 import LoadingScreen from '../components/loadingScreen';
 import PDFViewer from '../pages/pdfViewer';
 
-const LoadPDFViewer = () => {
+const LoadPDFViewer = (props) => {
     const [data, setData] = useState({ fetched: null, isFetching: false });
 
     useEffect(() => {
         const fetchData = async () => {
             try{
+                let payload = {
+                    tex: props.tex
+                }
+                
                 setData({ fetched: data, isFetching: true});
-                const response = await axios.get(`http://localhost:8000/example`);
+                const response = await axios.post(
+                    `http://localhost:8000/compile`, 
+                    payload
+                );
                 setData({ fetched: response.data, isFetching: false});
+                props.setLoading(false);
             } catch(e) {
                 console.log(e);
                 setData({ fetched: data.fetched, isFetching: false});
@@ -21,9 +29,9 @@ const LoadPDFViewer = () => {
     }, []);
 
     return data.fetched && !data.isFetching ? (
-        <LoadingScreen size="component" />
+        <PDFViewer data={data.fetched}/>
     ) : (
-        <PDFViewer data={data}/>
+        <LoadingScreen size="component" />
     )
 }
 

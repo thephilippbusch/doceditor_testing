@@ -57,11 +57,30 @@ const RegisterPage = () => {
                             password: password
                         }
 
-                        const response = await axios.post(
-                            'localhost:5000/auth/signup',
-                            payload
-                        );
-                        if(response.status="Success") {
+                        const response = await fetch('http://localhost:5000/auth/signup', {
+                            method: 'POST',
+                            mode: 'cors',
+                            cache: 'no-cache',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            redirect: 'follow',
+                            referrerPolicy: 'no-referrer',
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        return response.json();
+                    } catch(e) {
+                        setLoading(false);
+                        setError("Please enter a valid Username and Password");
+                        console.log(e);
+                    }
+                }
+                signup()
+                    .then(data => {
+                        console.log(data);
+                        if(data.status="Success") {
                             setAuthTokens(username);
                             setLoading(false);
                             setError("");
@@ -69,14 +88,10 @@ const RegisterPage = () => {
                             setPassword("");
 
                             history.replace(from);
+                        } else {
+                            console.log("nene")
                         }
-                    } catch(e) {
-                        setLoading(false);
-                        setError("Please enter a valid Username and Password");
-                        console.log(e);
-                    }
-                }
-                signup();
+                    });
             }
         } else {
             setLoading(false);

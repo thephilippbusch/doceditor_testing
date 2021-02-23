@@ -55,19 +55,20 @@ const LoginPage = () => {
                         password: password
                     }
 
-                    const response = axios.post(
-                        "localhost:5000/auth/login",
-                        payload
-                    )
+                    const response = await fetch('http://localhost:5000/auth/login', {
+                        method: 'POST',
+                        mode: 'cors',
+                        cache: 'no-cache',
+                        credentials: 'same-origin',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        redirect: 'follow',
+                        referrerPolicy: 'no-referrer',
+                        body: JSON.stringify(payload)
+                    });
 
-                    if (response.status === 200) {
-                        setLoading(false);
-                        setError("");
-                        setUsername("");
-                        setPassword("");
-                        setAuthTokens(username);
-                        history.replace(from);
-                    }
+                    return response.json();
                 } catch(e) {
                     setLoading(false);
                     setError("Password or username incorrect")
@@ -75,6 +76,19 @@ const LoginPage = () => {
                 }
             }
             login()
+                .then(data => {
+                    console.log(data)
+                    if (data) {
+                        if (data.status === 200) {
+                            setLoading(false);
+                            setError("");
+                            setUsername("");
+                            setPassword("");
+                            setAuthTokens(username);
+                            history.replace(from);
+                        }
+                    }
+                })
         } else {
             setLoading(false);
             setError("Please enter a valid Username and Password");

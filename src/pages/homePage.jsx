@@ -52,6 +52,36 @@ const mockGliederung = {
   heading1: "heida"
 }
 
+const outlineSampleData = [
+  {id:1,
+   name: 'Einleitung',
+   zeile: 10,
+   content: [{
+     id: 1.1,
+     name: 'Bla0',
+     zeile: 13,
+   },{
+    id: 1.2,
+    name: 'Bla1',
+    zeile: 13,
+   }]
+  },
+  {
+    id:2,
+    name: 'Chapter1',
+    zeile: 10,
+    content: [{
+      id: 2.1,
+      name: 'Bla2',
+      zeile: 13,
+    },{
+     id: 2.2,
+     name: 'Bla3',
+     zeile: 13,
+    }] 
+  }
+];
+
 const HomePage = () => {
   const [open, setOpen] = useState(false);
   let history = useHistory();
@@ -73,7 +103,7 @@ const HomePage = () => {
           <ProjectSelector projects={sampleData}/>
         </Box>
         <Box height="50%" border={{ color: 'brand', size: 'xsmall', side: 'top' }}>
-          <Gliederung />
+          <Gliederung outline={outlineSampleData}/>
         </Box>
       </Box>
       <Main 

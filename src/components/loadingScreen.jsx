@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Spinner } from './spinner';
 
 const FullScreenLoader = styled.div`
     width: 100%;
@@ -23,18 +23,18 @@ const LoadingScreen = (props) => {
     if(props.size === "component") {
         return (
             <DynamicLoader>
-                <CircularProgress color="primary"/>
+                <Spinner />
             </DynamicLoader>
         )
     }
     if(props.size === "alone") {
         return (
-            <CircularProgress size={30} color="primary"/>
+            <Spinner />
         )
     }
     return (
         <FullScreenLoader>
-            <CircularProgress color="primary"/>
+            <Spinner />
         </FullScreenLoader>
     )
 }

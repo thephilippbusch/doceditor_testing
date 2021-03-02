@@ -15,7 +15,7 @@
 
   --ck-color-base-foreground: var(--ck-custom-background);
   --ck-color-focus-border: hsl(208, 90%, 62%);
-  --ck-color-text: hsl(0, 0%, 98%);
+  --ck-color-text: hsl(0, 0%, 3%);
   --ck-color-shadow-drop: hsla(0, 0%, 0%, 0.2);
   --ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
 
@@ -57,7 +57,7 @@
 
   --ck-color-input-background: var(--ck-custom-background);
   --ck-color-input-border: hsl(257, 3%, 43%);
-  --ck-color-input-text: hsl(0, 0%, 98%);
+  --ck-color-input-text: hsl(0, 0%, 1%);
   --ck-color-input-disabled-background: hsl(255, 4%, 21%);
   --ck-color-input-disabled-border: hsl(250, 3%, 38%);
   --ck-color-input-disabled-text: hsl(0, 0%, 78%);
@@ -107,6 +107,6 @@
 
 
 .ck-editor__editable_inline {
-  height: 83.1vh;
+  height: 95%;
   min-height: 400px;
 }

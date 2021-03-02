@@ -17,7 +17,7 @@ const PDFViewer = (props) => {
 
     return (
         <Document
-            file={multiPagePDF}
+            file={tempPDF}
             onLoadSuccess={onDocumentLoadSuccess}
             onLoadError={console.error}
         >

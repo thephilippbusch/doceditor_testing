@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { io } from 'socket.io-client';
 
 import {
     Button,
@@ -31,7 +32,7 @@ const sampleUser = {
 
 const LoginPage = () => {
     const [password, setPassword] = useState("");
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -40,17 +41,19 @@ const LoginPage = () => {
     let { setAuthTokens } = useAuth();
     let { from } = location.state || { from: { pathname: "/home" } };
 
+    let socket = null;
+
     const handleSubmit = () => {
         setLoading(true);
         
         if(
-            username !== "" &&
+            email !== "" &&
             password !== ""
         ) {
             const login = async () => {
                 try {
                     let payload = {
-                        uid: username,
+                        email: email,
                         password: password
                     }
 
@@ -67,7 +70,7 @@ const LoginPage = () => {
                         body: JSON.stringify(payload)
                     });
 
-                    return response.json();
+                    return response;
                 } catch(e) {
                     setLoading(false);
                     setError("Password or username incorrect")
@@ -79,11 +82,18 @@ const LoginPage = () => {
                     console.log(data)
                     if (data) {
                         if (data.status === 200) {
+                            socket = io('http://localhost:5000');
+
+                            socket.on('connection_response', msg => {
+                                console.log(msg);
+                            })
+
+
                             setLoading(false);
                             setError("");
-                            setUsername("");
+                            setEmail("");
                             setPassword("");
-                            setAuthTokens(username);
+                            setAuthTokens(email);
                             history.replace(from);
                         }
                     }
@@ -112,11 +122,11 @@ const LoginPage = () => {
                     }
                     justify="center"
                 >
-                    <FormField label="Username" name="username" required>
+                    <FormField label="E-Mail" name="email" required>
                         <TextInput
-                            name="username"
-                            value={username}
-                            onChange={e => setUsername(e.target.value)}
+                            name="email"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
                         />
                     </FormField>
                     <FormField label="Password" name="password" required>

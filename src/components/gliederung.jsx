@@ -52,8 +52,9 @@ const GliederungMenu = (props) => {
                     </Box>
                 </Collapsible>
                 <Button
+                    key={outline.id}
                     hoverIndicator="background"
-                    onClick={() => alert(`Tex-ffFile: ${outline.content?.name}`)}
+                    onClick={() => alert(`Chapter: ${outline.content?.name}`)}
                 >
                     <Box
                         margin={{ left: 'medium' }}
@@ -70,7 +71,7 @@ const GliederungMenu = (props) => {
                 <Button
                     key={outline.id}
                     hoverIndicator="background"
-                    onClick={() => alert(`Picture: ${outline.name}`)}
+                    onClick={() => alert(`Chapter: ${outline.name}`)}
                 >
                     <Box
                         margin={{ left: 'large' }}
@@ -110,17 +111,6 @@ const Gliederung = (props) => {
         </Collapsible>
     </Box>
     )
-}
-
-const Gliederung = () => {
-
-    return(
-        <Box>
-            {sampleContent.map((section, index) => {
-                return(<Section section={section} key={index}/>)
-            })}
-        </Box>
-    );
 }
 
 export default Gliederung;

@@ -27,6 +27,7 @@ const LoginContainer = styled.div`
 `;
 
 const RegisterPage = () => {
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
     const [passwordRepeat, setPasswordRepeat] = useState("");
@@ -42,6 +43,7 @@ const RegisterPage = () => {
     const handleSubmit = () => {
         setLoading(true);
         if(
+            email !== "" &&
             username !== "" &&
             password !== "" &&
             passwordRepeat !== ""
@@ -53,7 +55,8 @@ const RegisterPage = () => {
                 const signup = async () => {
                     try {
                         let payload = {
-                            uid: username,
+                            email: email,
+                            username: username,
                             password: password
                         }
 
@@ -117,6 +120,13 @@ const RegisterPage = () => {
                     }
                     justify="center"
                 >
+                    <FormField label="E-Mail" name="email" required>
+                        <TextInput
+                            name="email"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                        />
+                    </FormField>
                     <FormField label="Username" name="username" required>
                         <TextInput
                             name="username"

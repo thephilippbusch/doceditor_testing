@@ -112,4 +112,15 @@ const Gliederung = (props) => {
     )
 }
 
+const Gliederung = () => {
+
+    return(
+        <Box>
+            {sampleContent.map((section, index) => {
+                return(<Section section={section} key={index}/>)
+            })}
+        </Box>
+    );
+}
+
 export default Gliederung;

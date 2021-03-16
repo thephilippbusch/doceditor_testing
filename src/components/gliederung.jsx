@@ -1,39 +1,15 @@
-import React, { useState } from 'react';
-
+import React, {useEffect, useState} from 'react';
 import {
     Box,
-    Collapsible,
     Button,
-    Anchor,
+    Collapsible,
     Text,
-    Heading 
+    Anchor
 } from 'grommet';
-
 import { 
     FormDown, 
     FormNext 
 } from 'grommet-icons';
-
-const sampleContent = [
-    {
-        section: "Chapter 1",
-        subSections: [
-            "Subsection 1",
-            "Subsection 2"
-        ]
-    },
-    {
-        section: "Chapter 2"
-    },
-    {
-        section: "Chapter 3",
-        subSections: [
-            "Subsection 1",
-            "Subsection 2"
-        ]
-    }
-];
-
 const MenuButton = ({ label, open, submenu, ...rest }) => {
     const Icon = open ? FormDown : FormNext;
 
@@ -52,56 +28,89 @@ const MenuButton = ({ label, open, submenu, ...rest }) => {
     );
 };
 
-const Section = (props) => {
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [subsectionOpen, setSubsectionOpen] = useState(false);
+const GliederungMenu = (props) => {
+    const outline = props.outline;
+    const [imagesOpen, setImagesOpen] = useState(false);
 
     return(
-        <Box key={props.index}>
-            <MenuButton 
-                open={menuOpen}
-                label={props.section.section}
-                onClick={() => {
-                    const newMenuOpen = !menuOpen;
-                    setMenuOpen(!menuOpen);
-                    setSubsectionOpen(!newMenuOpen ? false : subsectionOpen);
-                }}
-            />
-            <Collapsible open={menuOpen}>
-                {props.section.subSections &&
-                    props.section.subSections.map((subsection, index) => {
-                        return(
-                            <Button
-                                key={index}
-                                hoverIndicator="background"
-                                onClick={() => alert(`Section: ${subsection}`)}
-                            >
-                                <Box
-                                    margin={{ left: 'medium' }}
-                                    direction="row"
-                                    align="center"
-                                    pad="xsmall"
-                                >
-                                    <Anchor size="small" color="text" weight="normal">{subsection}</Anchor>
-                                </Box>
-                            </Button>
-                        )
-                    }
-                )}
-            </Collapsible>
+        <Box>
+            {outline.content  &&
+            <Box>
+                <MenuButton 
+                    submenu
+                    open={imagesOpen}
+                    label={outline.id +" " + outline.name}
+                    onClick={() => {
+                        setImagesOpen(!imagesOpen);
+                    }}
+                />
+                <Collapsible open={imagesOpen}>
+                    <Box width="small">
+                        {outline.content?.map(content => {
+                            return (<GliederungMenu outline={content} key={content.id}/>)
+                        })}
+                    </Box>
+                </Collapsible>
+                <Button
+                    key={outline.id}
+                    hoverIndicator="background"
+                    onClick={() => alert(`Chapter: ${outline.content?.name}`)}
+                >
+                    <Box
+                        margin={{ left: 'medium' }}
+                        direction="row"
+                        align="center"
+                        pad="xsmall"
+                    >
+                        <Anchor size="small" color="text" weight="normal">{outline.content?.name}</Anchor>
+                    </Box>
+                </Button>
+            </Box>
+            }
+            {!outline.content &&
+                <Button
+                    key={outline.id}
+                    hoverIndicator="background"
+                    onClick={() => alert(`Chapter: ${outline.name}`)}
+                >
+                    <Box
+                        margin={{ left: 'large' }}
+                        direction="row"
+                        align="center"
+                        pad="xsmall"
+                    >
+                        <Anchor size="small" color="text" weight="normal">{outline.id +" "+ outline.name}</Anchor>
+                    </Box>
+                </Button>
+            }
         </Box>
     )
 }
 
-const Gliederung = () => {
-
-    return(
-        <Box>
-            {sampleContent.map((section, index) => {
-                return(<Section section={section} key={index}/>)
-            })}
-        </Box>
-    );
+const Gliederung = (props) => {
+    const [menuOpen, setMenuOpen] = useState(true);
+    const [imagesOpen, setImagesOpen] = useState(false);
+    const outline = props.outline;
+    return (
+    <Box>
+        <MenuButton 
+        open={menuOpen}
+        label='Dateiname TODO'
+        onClick={() => {
+            const newMenuOpen = !menuOpen;
+            setMenuOpen(!menuOpen);
+            setImagesOpen(!newMenuOpen ? false : imagesOpen);
+        }}
+        />
+        <Collapsible open={menuOpen}>
+            <Box width="small">
+                {outline.map(outline => {
+                    return (<GliederungMenu outline={outline} key={outline.id}/>)
+                })}
+            </Box>
+        </Collapsible>
+    </Box>
+    )
 }
 
 export default Gliederung;

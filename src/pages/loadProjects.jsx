@@ -12,10 +12,13 @@ const LoadProjects = (props) => {
             try {
                 setData({ fetched: data, isFetching: true })
 
-                const response = await axios.get(`http://localhost:5000/projects?id=${user.uid}`)
+                const response = await axios.get(`http://localhost:5000/projects?uid=${user.uid}`)
+                console.log(response)
                 if(response) {
-                    if(response.status === 200) {
+                    if(response.data.status === 200) {
                         setData({ fetched: response.data.value, isFetching: false})
+                    } else {
+                        console.error(response.data.message)
                     }
                 }
             } catch(e) {

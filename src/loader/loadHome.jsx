@@ -11,6 +11,8 @@ const LoadHomeContainer = styled.div`
     align-items: center;
 `;
 
+const sampleUID = '6053555ad795fcfee85dbdc6'
+
 const LoadHome = (props) => {
     const [data, setData] = useState({ fetched: null, isFetching: false })
     const [error, setError] = useState()
@@ -19,12 +21,12 @@ const LoadHome = (props) => {
         const fetchUserData = async () => {
             try {
                 setData({ fetched: null, isFetching: true })
-                const response = await axios.get('http://localhost:5000/userdata')
+                const response = await axios.get(`http://localhost:5000/userdata?uid=${sampleUID}`)
                 console.log(response)
                 if(response) {
-                    if(response.status === 200) {
+                    if(response.data.status === 200) {
                         setError(null)
-                        setData({ fetched: response.data.value.user, isFetching: false})
+                        setData({ fetched: response.data.data, isFetching: false})
                     } else {
                         setError(response.message)
                         setData({ fetched: null, isFetching: false })

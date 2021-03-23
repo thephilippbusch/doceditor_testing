@@ -209,7 +209,7 @@ const ProjectSelector = (props) => {
     return (
         <Box fill="horizontal">
             {projects.map(project => {
-                return (<ProjectMenu project={project.main} key={project.main._id}/>)
+                return (<ProjectMenu project={project} key={project._id}/>)
             })}
 
             <Box 

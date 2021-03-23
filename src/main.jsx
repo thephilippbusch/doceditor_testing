@@ -1,64 +1,45 @@
-import React, { useState, lazy } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {
   BrowserRouter as Router,
-  Redirect,
   Route,
   Switch
 } from 'react-router-dom';
 import { globalTheme } from './styles/globalGrommetTheme';
 import { Grommet } from 'grommet';
 
-import PrivateRoute from './auth/privateRoute';
-import { AuthContext } from './auth/auth';
-
 import NavBar from './components/navbar';
 import Footer from './components/footer';
-import LoadingScreen from './components/loadingScreen';
+import HomePage from './pages/homePage';
 
-const RegisterPage = lazy(() => import('./pages/registerPage'));
-const LoginPage = lazy(() => import('./pages/loginPage'));
-const LoadHome = lazy(() => import('./loader/loadHome'));
-const LoadProfile = lazy(() => import('./loader/loadProfile'));
+import LoadHome from './loader/loadHome';
+import { connect } from './socket';
 
 const MainContainer = styled.div`
   width: 100%;
   height: 100%;
+  margin: 0px;
 `;
 
 const Main = () => {
-  const existingTokens = localStorage.getItem("tokens");
-  const [authTokens, setAuthTokens] = useState(existingTokens);
-  
-  const setTokens = (data) => {
-    localStorage.setItem("tokens", data);
-    setAuthTokens(data);
-  }
+  const socket = connect()
 
   return (
-    <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
       <Router>
         <Grommet theme={globalTheme}>
           <MainContainer>
-            <Route path='/:page' render={({match}) => <NavBar match={match}/>}/>
+            <Route path='/:page' render={({match}) => <NavBar match={match} socket={socket}/>}/>
 
-            <React.Suspense fallback={() => <LoadingScreen />}>
-              <Switch>
-                <Route path="/login" component={LoginPage} />
-                <Route path="/register" component={RegisterPage} />
-                <PrivateRoute path="/profile" component={LoadProfile} />
-                <PrivateRoute exact path="/home" component={LoadHome} />
-                <PrivateRoute path="/">
-                  <Redirect to="/home"/>
-                </PrivateRoute>
-              </Switch>
-            </React.Suspense>
+            <Switch>
+              <Route path="/">
+                <LoadHome socket={socket} />
+              </Route>
+            </Switch>
 
             <Footer />
           </MainContainer>
         </Grommet>
       </Router>
-    </AuthContext.Provider>
   );
 }
 

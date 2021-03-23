@@ -27,7 +27,7 @@ const LoginContainer = styled.div`
 `;
 
 const RegisterPage = () => {
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
     const [passwordRepeat, setPasswordRepeat] = useState("");
@@ -55,9 +55,9 @@ const RegisterPage = () => {
                 const signup = async () => {
                     try {
                         let payload = {
-                            email: email,
-                            username: username,
-                            password: password
+                            uid: username,
+                            password: password,
+                            email: email
                         }
 
                         const response = await fetch('http://localhost:5000/auth/signup', {
@@ -73,7 +73,9 @@ const RegisterPage = () => {
                             body: JSON.stringify(payload)
                         });
                         
-                        return response.json();
+                        if(response) {
+                            console.log(response);
+                        }
                     } catch(e) {
                         setLoading(false);
                         setError("Please enter a valid Username and Password");
@@ -81,20 +83,6 @@ const RegisterPage = () => {
                     }
                 }
                 signup()
-                    .then(data => {
-                        console.log(data);
-                        if(data.status="Success") {
-                            setAuthTokens(username);
-                            setLoading(false);
-                            setError("");
-                            setUsername("");
-                            setPassword("");
-
-                            history.replace(from);
-                        } else {
-                            console.log("nene")
-                        }
-                    });
             }
         } else {
             setLoading(false);

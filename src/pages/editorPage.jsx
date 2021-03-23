@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import '../styles/rich_editor.css';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+// import '../styles/rich_editor.css';
 import AceEditor from 'react-ace';
 import fileDownload from 'react-file-download';
 import LoadPDFViewer from '../loader/loadPDFViewer';
 import PDFViewer from './pdfViewer';
-import { io } from 'socket.io-client';
 
 import "ace-builds/src-noconflict/mode-latex";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -17,6 +14,7 @@ import {
     Text,
     Header,
     Button,
+    DropButton,
     Layer,
     TextInput,
     Anchor
@@ -27,11 +25,10 @@ import {
     Previous as PreviousIcon,
     Download as DownloadIcon,
     Checkmark as CheckSaveIcon,
-    AddCircle as NewIcon,
-    Connect as ConnectIcon
+    AddCircle as NewIcon
 } from 'grommet-icons';
 
-import sampleTex from '../samples/example-tex.txt';
+// import sampleTex from '../samples/example-tex.txt';
 import LoadingScreen from '../components/loadingScreen';
 
 const EditorContainer = styled.div`
@@ -120,12 +117,17 @@ const TexEditor = styled.div`
 `;
 
 const RichEditor = styled.div`
-    width: 100%;
-    height: 100%;
+    width: 50%;
+    height: 87vh;
     background-color: white;
+
+    .ckeditor {
+        height: 100%;
+    }
 `;
 
 const EditorPage = () => {
+    const [currentEditor, setCurrentEditor] = useState('rich');
     const [editorState, setEditorState] = useState('');
 
     const [editorWidth, setEditorWidth] = useState("49.5%");
@@ -135,10 +137,6 @@ const EditorPage = () => {
     const [fullview, setFullview] = useState(true);
     const [currentView, setCurrentView] = useState("editor");
 
-    const [currentEditor, setCurrentEditor] = useState('tex');
-    const [texEditorBtn, setTexEditorBtn] = useState({bg: 'neutral-3', text: 'text-strong', disabled: false});
-    const [richEditorBtn, setRichEditorBtn] = useState({bg: 'background-front', text: 'text-weak', disabled: false});
-
     const [compilerIsLoading, setCompilerIsLoading] = useState(false);
     const [PDFViewerComponent, setPDFViewerComponent] = useState();
 
@@ -146,8 +144,7 @@ const EditorPage = () => {
     const [texFilename, setTexFilename] = useState('');
     const [fileNameError, setFileNameError] = useState('');
 
-    let socket = null;
-
+    /*
     useEffect(() => {
         fetch(sampleTex)
             .then(r => r.text())
@@ -155,6 +152,7 @@ const EditorPage = () => {
                 setEditorState(text)
             })
     }, [sampleTex]);
+    */
 
     const handleViewerHide = () => {
         setFullview(false)
@@ -176,18 +174,6 @@ const EditorPage = () => {
         setFullview(true);
     }
 
-    const toggleCurrentEditor = (newEditor) => {
-        setCurrentEditor(newEditor);
-        if(newEditor === 'rich') {
-            setRichEditorBtn({bg: 'neutral-3', text: 'text-strong', disabled: false});
-            setTexEditorBtn({bg: 'background-front', text: 'text-weak', disabled: false});
-        }
-        if(newEditor === 'tex') {
-            setTexEditorBtn({bg: 'neutral-3', text: 'text-strong', disabled: false});
-            setRichEditorBtn({bg: 'background-front', text: 'text-weak', disabled: false});
-        }
-    }
-
     const test = () => {
         console.log(editorState)
     }
@@ -197,10 +183,8 @@ const EditorPage = () => {
         setCompilerIsLoading(true)
 
         // setPDFViewerComponent(<LoadPDFViewer tex={editorState} setLoading={loading => setCompilerIsLoading(loading)}/>)
-        setTimeout(() => {
-            setPDFViewerComponent(<PDFViewer />)
-            setCompilerIsLoading(false) 
-        }, 1500)
+        setPDFViewerComponent(<h1>Coming Soon!</h1>)
+        setCompilerIsLoading(false) 
     }
 
     const saveTexFile = () => {
@@ -211,15 +195,6 @@ const EditorPage = () => {
             fileDownload(editorState, fullFilename);
             setShowLayer(false);
         }
-    }
-
-    const connectToSocket = () => {
-        // console.log("Preparing socket...");
-        socket = io('http://localhost:5000');
-
-        socket.on('connection_response', msg => {
-            console.log(msg);
-        });
     }
 
     return(
@@ -267,115 +242,54 @@ const EditorPage = () => {
                         </Layer>
                     )}
                     <Header>
-                        <Box direction="row" justify="between" width="100%">
-                            <Box direction="row" justify="start">
-                                <Button 
-                                    primary 
-                                    label="Save" 
-                                    icon={<CheckSaveIcon size="20px"/>} 
-                                    reverse
-                                    hoverIndicator={true}
-                                    onClick={() => console.log("File Saved!")}
-                                />
-                                <Button 
-                                    primary 
-                                    label="Export" 
-                                    icon={<DownloadIcon size="20px"/>}
-                                    reverse
-                                    hoverIndicator={true}
-                                    onClick={() => setShowLayer(true)}
-                                />
-                                {/*<Button 
-                                    primary 
-                                    label="Connect" 
-                                    icon={<ConnectIcon size="20px"/>}
-                                    reverse
-                                    hoverIndicator={true}
-                                    onClick={() => connectToSocket()}
-                                />*/}
-                            </Box>
-                            <Box direction="row" justify="end" height="30px" alignSelf="center" margin={{right: "xsmall"}}>
-                                <Button
-                                    primary
-                                    label={<Text color={texEditorBtn.text}>TeX</Text>}
-                                    onClick={() => toggleCurrentEditor('tex')}
-                                    color={texEditorBtn.bg}
-                                    
-                                    disabled={texEditorBtn.disabled}
-                                />
-                                <Button
-                                    primary
-                                    label={<Text color={richEditorBtn.text}>Rich</Text>}
-                                    onClick={() => toggleCurrentEditor('rich')}
-                                    color={richEditorBtn.bg}
-                                    
-                                    disabled={richEditorBtn.disabled}
-                                />
-                            </Box>
+                        <Box direction="row" justify="start">
+                            <Button 
+                                primary 
+                                label="Save" 
+                                icon={<CheckSaveIcon size="20px"/>} 
+                                reverse
+                                hoverIndicator={true}
+                                onClick={() => console.log("File Saved!")}
+                            />
+                            <Button 
+                                primary 
+                                label="Export" 
+                                icon={<DownloadIcon size="20px"/>}
+                                reverse
+                                hoverIndicator={true}
+                                onClick={() => setShowLayer(true)}
+                            />
                         </Box>
                     </Header>
-                    {(currentEditor === 'rich') ? (
-                        <RichEditor>
-                            <CKEditor
-                                onReady={ editor => {
-                                    console.log( 'Editor is ready to use!', editor );
-            
-                                    // Insert the toolbar before the editable area.
-                                    editor.ui.getEditableElement().parentElement.insertBefore(
-                                        editor.ui.view.toolbar.element,
-                                        editor.ui.getEditableElement()
-                                    );
-            
-                                    editor = editor;
-                                } }
-                                onError={ ( { willEditorRestart } ) => {
-                                    // If the editor is restarted, the toolbar element will be created once again.
-                                    // The `onReady` callback will be called again and the new toolbar will be added.
-                                    // This is why you need to remove the older toolbar.
-                                    if ( willEditorRestart ) {
-                                        this.editor.ui.view.toolbar.element.remove();
-                                    }
-                                } }
-                                editor={ DecoupledEditor }
-                                data={editorState}
-                                onChange={(event, editor) => {
-                                    const data = editor.getData();
-                                    setEditorState(data);
+                    <TexEditor>
+                        <div className="texBody">
+                            <AceEditor
+                                placeholder="Start typing..."
+                                mode="latex"
+                                theme="monokai"
+                                name="TexEditor"
+                                width='100%'
+                                height='100%'
+                                fontSize={14}
+                                showPrintMargin={true}
+                                showGutter={true}
+                                highlightActiveLine={true}
+                                onChange={(val) => {
+                                    setEditorState(val)
                                 }}
-                                
+                                value={editorState}
+                                setOptions={{
+                                    wrap: true,
+                                    indentedSoftWrap: false,
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    showLineNumbers: true,
+                                    tabSize: 4,
+                                }}
                             />
-                        </RichEditor>
-                    ) : (
-                        <TexEditor>
-                            <div className="texBody">
-                                <AceEditor
-                                    placeholder="Start typing..."
-                                    mode="latex"
-                                    theme="monokai"
-                                    name="TexEditor"
-                                    width='100%'
-                                    height='100%'
-                                    fontSize={14}
-                                    showPrintMargin={true}
-                                    showGutter={true}
-                                    highlightActiveLine={true}
-                                    onChange={(val) => {
-                                        setEditorState(val)
-                                    }}
-                                    value={editorState}
-                                    setOptions={{
-                                        wrap: true,
-                                        indentedSoftWrap: false,
-                                        enableBasicAutocompletion: true,
-                                        enableLiveAutocompletion: true,
-                                        enableSnippets: true,
-                                        showLineNumbers: true,
-                                        tabSize: 4,
-                                    }}
-                                />
-                            </div>
-                        </TexEditor>
-                    )}
+                        </div>
+                    </TexEditor>
                 </Box>
                 <Box width="1%" background="text-xweak" height="91vh" direction="column" justify="center">
                     {fullview ? (

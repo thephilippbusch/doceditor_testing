@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../auth/provideAuth';
+import { getUserData } from '../socket';
 
 import {
     Box,
@@ -31,14 +32,14 @@ const AppBar = (props) => (
 );
 
 const NavBarItem = (props) => {
+    const socket = props.socket;
     let history = useHistory();
     console.log(props.path);
 
     const logout = () => {
-        localStorage.removeItem('tokens');
-        // localStorage.removeItem('uid');
-
-        history.push('/login');
+        socket.emit('disconnect');
+        fetch('http://localhost:5000/auth/logout')
+        window.location.href = 'http://localhost:5000/login';
     }
 
     switch(props.path) {
@@ -57,7 +58,7 @@ const NavBarItem = (props) => {
                                         <UserIcon size="medium"/>
                                     </Box>
                                 ),
-                                onClick: () => history.push('/profile')
+                                onClick: () => getUserData()
                             },
                             {
                                 label: <Box alignSelf="center" pad={{right: "medium"}}>Logout</Box>,
@@ -119,7 +120,7 @@ const NavBarItem = (props) => {
                     </Menu>
                 </Box>
             )
-        default:
+        case "":
             return(
                 <Box direction="row">
                     <Menu 
@@ -167,7 +168,7 @@ const NavBar = (props) => {
                     <Heading margin="xsmall" size="small">OLE</Heading>
                 </Button>
 
-                <NavBarItem auth={auth} path={props.match.params.page}/>
+                <NavBarItem auth={auth} path={props.match.params.page} socket={props.socket}/>
             </AppBar>
         
         </Box>

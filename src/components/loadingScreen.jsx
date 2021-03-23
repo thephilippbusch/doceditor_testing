@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { Spinner } from './spinner';
+import Spinner from './spinner';
 
 const FullScreenLoader = styled.div`
     width: 100%;

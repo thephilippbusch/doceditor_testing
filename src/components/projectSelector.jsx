@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { 
     Box,
@@ -17,6 +17,9 @@ import {
     FormDown, 
     FormNext 
 } from 'grommet-icons';
+
+import LoadingScreen from '../components/loadingScreen'
+import LoadEditor from '../loader/loadEditor'
 
 const MenuButton = ({ label, open, submenu, ...rest }) => {
     const Icon = open ? FormDown : FormNext;
@@ -65,6 +68,10 @@ const ProjectMenu = (props) => {
             setCreateError("Invalid Document Name")
             setNewDocName('')
         }
+    }
+
+    const openNewDocument = () => {
+        props.setNewEditor(<LoadEditor docID={project.dids[0].did}/>)
     }
 
     return(
@@ -118,9 +125,9 @@ const ProjectMenu = (props) => {
                         )
                     })}
                 </Collapsible>
-                {/* <Button
+                <Button
                     hoverIndicator="background"
-                    onClick={() => connect()}
+                    onClick={() => openNewDocument()}
                 >
                     <Box
                         margin={{ left: 'medium' }}
@@ -128,9 +135,9 @@ const ProjectMenu = (props) => {
                         align="center"
                         pad="xsmall"
                     >
-                        <Anchor size="small" color="text" weight="normal">{project.content.tex}</Anchor>
+                        <Anchor size="small" color="text" weight="normal">{project.dids[0].name}</Anchor>
                     </Box>
-                </Button> */}
+                </Button>
                 {editingNew && (
                     <Box align="center" pad={{ left: 'medium' }}>
                         <Box fill="horizontal" direction="row" justify="between" align="center">
@@ -174,8 +181,46 @@ const ProjectMenu = (props) => {
     )
 }
 
+const LoadProject = (props) => {
+    const [projectData, setProjectData] = useState({ fetched: null, isFetching: false })
+
+    useEffect(() => {
+        const fetchProjectData = async (pid) => {
+            try{
+                setProjectData({ fetched: projectData, isFetching: true })
+                fetch('http://localhost:5000/requests/get_project', {
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    redirect: 'follow',
+                    referrerPolicy: 'no-referrer',
+                    body: JSON.stringify({"pid": pid})
+                }).then(response => {
+                    return response.json()
+                }).then(data => {
+                    console.log(data)
+                    setProjectData({ fetched: data.value, isFetching: false })
+                })
+            } catch(e) {
+                setProjectData({ fetched: null, isFetching: false })
+                console.error(e)
+            }
+        }
+        fetchProjectData(props.pid)
+    }, [])
+
+    return projectData.fetched && !projectData.isFetching ? (
+        <ProjectMenu project={projectData.fetched} setNewEditor={props.setNewEditor}/>
+    ) : (
+        <LoadingScreen size="component"/>
+    )
+}
+
 const ProjectSelector = (props) => {
-    const [projects, setProjects] = useState(props.data);
     const [newProjectName, setNewProjectName] = useState("");
     const [showLayer, setShowLayer] = useState(false);
     const [newProjError, setNewProjError] = useState('');
@@ -208,8 +253,8 @@ const ProjectSelector = (props) => {
 
     return (
         <Box fill="horizontal">
-            {projects.map(project => {
-                return (<ProjectMenu project={project} key={project._id}/>)
+            {props.user.created_poject_pids.map((pid, index) => {
+                return (<LoadProject pid={pid} key={index} setNewEditor={props.setCurrEditor}/>)
             })}
 
             <Box 
@@ -220,9 +265,10 @@ const ProjectSelector = (props) => {
                 align="center"
                 justify="start"
                 hoverIndicator="background"
+                pad={{left: "xsmall", vertical: "xsmall"}}
             >
-                <AddCircle size="medium"/>
-                <Anchor size="small" color="text-weak" weight="normal" margin={{left: "small"}}>Add Projects</Anchor>
+                <AddCircle size="small"/>
+                <Anchor size="small" color="text-weak" weight="normal" margin={{left: "small"}}>Add Project</Anchor>
             </Box>
             {showLayer && (
                 <Layer

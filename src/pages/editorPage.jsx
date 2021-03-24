@@ -126,7 +126,7 @@ const RichEditor = styled.div`
     }
 `;
 
-const EditorPage = () => {
+const EditorPage = (props) => {
     const [currentEditor, setCurrentEditor] = useState('rich');
     const [editorState, setEditorState] = useState('');
 
@@ -144,15 +144,17 @@ const EditorPage = () => {
     const [texFilename, setTexFilename] = useState('');
     const [fileNameError, setFileNameError] = useState('');
 
-    /*
     useEffect(() => {
-        fetch(sampleTex)
-            .then(r => r.text())
-            .then(text => {
-                setEditorState(text)
+        let string = '';
+        let rows = [];
+        rows = Object.keys(props.data.value.text)
+        rows.map(row => {
+            props.data.value.text[row].map(char => {
+                string += char[1]
             })
-    }, [sampleTex]);
-    */
+        })
+        setEditorState(string)
+    }, [props.data]);
 
     const handleViewerHide = () => {
         setFullview(false)

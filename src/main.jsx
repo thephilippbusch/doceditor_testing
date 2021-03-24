@@ -28,7 +28,7 @@ const Main = () => {
       <Router>
         <Grommet theme={globalTheme}>
           <MainContainer>
-            <Route path='/:page' render={({match}) => <NavBar match={match} socket={socket}/>}/>
+            <Route render={({match}) => <NavBar socket={socket}/>}/>
 
             <Switch>
               <Route path="/">

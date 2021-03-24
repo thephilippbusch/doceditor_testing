@@ -15,33 +15,25 @@ const sampleUID = '6053555ad795fcfee85dbdc6'
 
 const LoadHome = (props) => {
     const [data, setData] = useState({ fetched: null, isFetching: false })
-    const [error, setError] = useState()
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 setData({ fetched: null, isFetching: true })
-                const response = await axios.get(`http://localhost:5000/userdata?uid=${sampleUID}`)
+                const response = await axios.get(`http://localhost:5000/requests/get_user_data`)
                 console.log(response)
                 if(response) {
-                    if(response.data.status === 200) {
-                        setError(null)
-                        setData({ fetched: response.data.data, isFetching: false})
-                    } else {
-                        setError(response.message)
-                        setData({ fetched: null, isFetching: false })
-                        console.log(error)
-                    }
+                    setData({ fetched: response.data.value, isFetching: false})
                 }
             } catch(e) {
-                setError('Something went wrong!')
+                setData({ fetched: null, isFetching: false})
                 console.error(e)
             }
         }
         fetchUserData();
     }, [])
 
-    return !error && data.fetched && !data.isFetching ? (
+    return data.fetched && !data.isFetching ? (
         <HomePage user={data.fetched}/>
     ) : (
         <LoadingScreen size={'fullscreen'}/>

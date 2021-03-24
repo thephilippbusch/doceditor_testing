@@ -10,6 +10,7 @@ import {
     FormDown, 
     FormNext 
 } from 'grommet-icons';
+
 const MenuButton = ({ label, open, submenu, ...rest }) => {
     const Icon = open ? FormDown : FormNext;
 
@@ -39,7 +40,7 @@ const GliederungMenu = (props) => {
                 <MenuButton 
                     submenu
                     open={imagesOpen}
-                    label={outline.id +" " + outline.name}
+                    label={outline.id + " " + outline.name}
                     onClick={() => {
                         setImagesOpen(!imagesOpen);
                     }}
@@ -51,20 +52,22 @@ const GliederungMenu = (props) => {
                         })}
                     </Box>
                 </Collapsible>
-                <Button
-                    key={outline.id}
-                    hoverIndicator="background"
-                    onClick={() => alert(`Chapter: ${outline.content?.name}`)}
-                >
-                    <Box
-                        margin={{ left: 'medium' }}
-                        direction="row"
-                        align="center"
-                        pad="xsmall"
+                {outline.content.name && (
+                    <Button
+                        key={outline.id}
+                        hoverIndicator="background"
+                        onClick={() => alert(`Chapter: ${outline.content?.name}`)}
                     >
-                        <Anchor size="small" color="text" weight="normal">{outline.content?.name}</Anchor>
-                    </Box>
-                </Button>
+                        <Box
+                            margin={{ left: 'medium' }}
+                            direction="row"
+                            align="center"
+                            pad="xsmall"
+                        >
+                            <Anchor size="small" color="text" weight="normal">{outline.content?.name}</Anchor>
+                        </Box>
+                    </Button>
+                )}
             </Box>
             }
             {!outline.content &&

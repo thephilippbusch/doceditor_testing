@@ -7,26 +7,32 @@ import LoadingScreen from '../components/loadingScreen';
 const LoadProjects = (props) => {
     const [data, setData] = useState({ fetched: null, isFetching: false })
 
-    useEffect(() => {
-        const fetchProjectData = async (user) => {
-            try {
-                setData({ fetched: data, isFetching: true })
-
-                const response = await axios.get(`http://localhost:5000/projects?uid=${user.uid}`)
-                console.log(response)
-                if(response) {
-                    if(response.data.status === 200) {
-                        setData({ fetched: response.data.value, isFetching: false})
-                    } else {
-                        console.error(response.data.message)
-                    }
-                }
-            } catch(e) {
-                console.error(e)
-            }
-        }
-        fetchProjectData(props.user)
-    }, [])
+    // useEffect(() => {
+    //     const fetchProjectData = async (user) => {
+    //         try {
+    //             setData({ fetched: data, isFetching: true })
+    //             let projects = [];
+    //             user.created_poject_pids.map(pid => {
+    //                 let payload = {
+    //                     "pid": pid
+    //                 }
+    //                 // const response = await axios.post(`http://localhost:5000/requests/get_project`, body=JSON.stringify(payload))
+    //                 console.log(response)
+    //                 if(response) {
+    //                     projects.append(response.data.value)
+    //                 }
+    //             })
+    //             if(projects.length !== 0) {
+    //                 setData({ fetched: projects, isFetching: false})
+    //             } else {
+    //                 setData({ fetched: null, isFetching: false })
+    //             }
+    //         } catch(e) {
+    //             console.error(e)
+    //         }
+    //     }
+    //     fetchProjectData(props.user)
+    // }, [])
 
     return data.fetched && !data.isFetching ? (
         <ProjectSelector data={data.fetched}/>

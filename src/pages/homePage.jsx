@@ -3,7 +3,8 @@ import Gliederung from '../components/gliederung';
 
 import { 
   Box,
-  Main
+  Main,
+  Heading
 } from 'grommet';
 
 import {
@@ -54,6 +55,11 @@ const outlineSampleData = [
 
 const HomePage = (props) => {
   const [open, setOpen] = useState(false)
+  const [currDocID, setCurrDocID] = useState();
+
+  const toggleCurrentEditor = (editor) => {
+    setCurrDocID(editor)
+  }
 
   return (
     <Box
@@ -62,13 +68,13 @@ const HomePage = (props) => {
       justify="start"
     >
       <Box 
-        width={{min: "medium-small", max: "17%"}} 
+        width={{min: "medium-small", max: "17%"}}
         background="background-back" 
         border={{ color: 'brand', size: 'small', side: 'right' }}
       >
         <Box height="50%" border={{ color: 'brand', size: 'xsmall', side: 'bottom' }}>
           {props.user ? (
-            <LoadProjects user={props.user} />
+            <ProjectSelector user={props.user} currDocID={currDocID} setCurrEditor={toggleCurrentEditor}/>
           ) : (
             <LoadingScreen size="component"/>
           )}
@@ -81,7 +87,13 @@ const HomePage = (props) => {
         width="40%" 
         background="background-front"
       >
-        <LoadEditor />
+        {currDocID ? (
+          currDocID
+        ) : (
+          <Box fill direction="row" align="center" justify="center">
+            <Heading level="4">Choose a Document to work on!</Heading>
+          </Box>
+        )}
       </Main>
     </Box>
   );
